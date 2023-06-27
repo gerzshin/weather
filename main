@@ -1,0 +1,54 @@
+import requests
+
+def get_weather(city):
+    api_key = 'YOUR_API_KEY'
+    base_url = 'https://api.openweathermap.org/data/2.5/weather'
+
+    params = {
+        'q': city,
+        'appid': api_key,
+        'units': 'metric'
+    }
+
+    response = requests.get(base_url, params=params)
+    weather_data = response.json()
+
+    if weather_data['cod'] == '404':
+        return '未找到该城市的天气信息。'
+
+    temperature = weather_data['main']['temp']
+    description = weather_data['weather'][0]['description']
+    humidity = weather_data['main']['humidity']
+
+    weather_info = f"城市：{city}\n温度：{temperature}°C\n天气状况：{description}\n湿度：{humidity}%"
+    return weather_info
+
+print("天气应用程序命令行工具")
+
+while True:
+    print("\n请选择操作：")
+    print("1. 输入城市名称获取天气")
+    print("2. 输入经纬度获取天气")
+    print("3. 退出程序")
+
+    choice = input("请选择操作（输入数字）：")
+
+    if choice == '3':
+        print("谢谢使用，再见！")
+        break
+
+    if choice not in ['1', '2']:
+        print("无效的选择，请重新输入。")
+        continue
+
+    if choice == '1':
+        city = input("请输入城市名称：")
+        weather = get_weather(city)
+        print(weather)
+
+    elif choice == '2':
+        latitude = input("请输入纬度：")
+        longitude = input("请输入经度：")
+        location = f"{latitude},{longitude}"
+        weather = get_weather(location)
+        print(weather)
